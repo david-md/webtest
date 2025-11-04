@@ -16,6 +16,11 @@
       text-align: center;
       color: #333;
     }
+    h2 {
+      text-align: center;
+      color: #444;
+      margin-top: 2rem;
+    }
     #intro-text {
       max-width: 900px;
       margin: 1rem auto;
@@ -56,10 +61,11 @@
     th {
       background: #f0f0f0;
       font-weight: 700;
-      text-align: left;
+      text-align: center;
     }
     td:first-child {
       font-weight: bold;
+      text-align: center;
     }
     tr:nth-child(even) td {
       background: #fafafa;
@@ -73,7 +79,7 @@
 
   <script>
     async function loadSheetData() {
-      const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJ0Xd6VQTFd-8gxi6M0RgbSgZ1Z8SQsddSuucpMONFr5Ci9GUie8DN4nVlYCbnr8dAmj4H66Uq4f1m/pub?output=csv"; // replace with your Sheet CSV URL
+      const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJ0Xd6VQTFd-8gxi6M0RgbSgZ1Z8SQsddSuucpMONFr5Ci9GUie8DN4nVlYCbnr8dAmj4H66Uq4f1m/pub?output=csv";
 
       try {
         const response = await fetch(sheetURL);
@@ -106,8 +112,8 @@
         document.getElementById("intro-text").textContent = headerText;
 
         // --- Helper to build a table from a row range ---
-        function buildTable(start, end) {
-          let html = "<table><colgroup><col><col><col></colgroup>";
+        function buildTable(start, end, title) {
+          let html = `<h2>${title}</h2><table><colgroup><col><col><col></colgroup>`;
           const data = rows.slice(start, end).filter(r => r.join("").trim() !== "");
           if (data.length === 0) return "";
           // Header row
@@ -128,10 +134,10 @@
           return html;
         }
 
-        // --- Build two tables ---
+        // --- Build both tables with subtitles ---
         let html = "";
-        html += buildTable(1, 11);  // rows 2–11
-        html += buildTable(12, rows.length);  // rows 13–end
+        html += buildTable(1, 11, "Officer Positions");  // rows 2–11
+        html += buildTable(12, rows.length, "Appointed Positions");  // rows 13–end
 
         document.getElementById("sheet-data").innerHTML = html;
 
