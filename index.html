@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google Sheet → HTML Table Test</title>
+
+  <style>
+    body {
+      font-family: system-ui, Arial, sans-serif;
+      background: #fafafa;
+      margin: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    #sheet-data {
+      max-width: 900px;
+      margin: 2rem auto;
+      overflow-x: auto;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background: #f5f5f5;
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Google Sheet Data Test</h1>
+  <div id="sheet-data">Loading data...</div>
+
+  <script>
+    async function loadSheetData() {
+      const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2I5EXAMPLE/pub?output=csv";
+      try {
+        const response = await fetch(sheetURL);
+        if (!response.ok) throw new Error("Network response was not ok");
+        const csv = await response.text();
+
+        const rows = csv
+          .trim()
+          .split("\n")
+          .map(r => r.split(","));
+
+        let html = "<table>";
+        rows.forEach((row, i) => {
+          html += "<tr>";
+          row.forEach(cell => {
+            const tag = i === 0 ? "th" : "td";
+            html += `<${tag}>${cell}</${tag}>`;
+          });
+          html += "</tr>";
+        });
+        html += "</table>";
+        document.getElementById("sheet-data").innerHTML = html;
+      } catch (error) {
+        document.getElementById("sheet-data").innerHTML =
+          "<p style='color:red;'>Error loading data. Check the sheet URL or CORS settings.</p>";
+        console.error(error);
+      }
+    }
+    loadSheetData();
+  </script>
+</body>
+</html>
