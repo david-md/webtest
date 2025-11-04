@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Google Sheet → Styled Table</title>
+  <title>Council Positions</title>
 
   <style>
     body {
@@ -17,7 +17,7 @@
       color: #333;
     }
     #intro-text {
-      max-width: 700px;
+      max-width: 900px;
       margin: 1rem auto;
       font-size: 1rem;
       line-height: 1.5;
@@ -27,7 +27,7 @@
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
-    #sheet-data {
+    .table-container {
       max-width: 900px;
       margin: 2rem auto;
       overflow-x: auto;
@@ -40,10 +40,11 @@
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
+      margin-bottom: 1rem;
     }
     colgroup col:nth-child(1) { width: 200px; }
     colgroup col:nth-child(2) { width: 500px; }
-    colgroup col:nth-child(3) { width: 250px; }
+    colgroup col:nth-child(3) { width: 200px; }
 
     th, td {
       border: 1px solid #ddd;
@@ -54,8 +55,8 @@
     }
     th {
       background: #f0f0f0;
-      font-weight: 600;
-      text-align: center;
+      font-weight: 700;
+      text-align: left;
     }
     td:first-child {
       font-weight: bold;
@@ -66,9 +67,9 @@
   </style>
 </head>
 <body>
-  <h1>Google Sheet Data (Columns A–C)</h1>
+  <h1>Council Positions</h1>
   <div id="intro-text"></div>
-  <div id="sheet-data">Loading data...</div>
+  <div id="sheet-data" class="table-container">Loading data...</div>
 
   <script>
     async function loadSheetData() {
@@ -100,24 +101,38 @@
         }
         if (current || row.length) row.push(current), rows.push(row);
 
-        // --- Extract first row text as paragraph ---
+        // --- Extract header text (row 1) ---
         const headerText = rows[0].slice(0, 3).join(" ").trim();
         document.getElementById("intro-text").textContent = headerText;
 
-        // --- Build table for remaining rows ---
-        let html = "<table><colgroup><col><col><col></colgroup>";
-
-        for (let i = 1; i < rows.length; i++) {
-          const r = rows[i];
-          const cells = r.slice(0, 3);
+        // --- Helper to build a table from a row range ---
+        function buildTable(start, end) {
+          let html = "<table><colgroup><col><col><col></colgroup>";
+          const data = rows.slice(start, end).filter(r => r.join("").trim() !== "");
+          if (data.length === 0) return "";
+          // Header row
+          const header = data[0].slice(0, 3);
           html += "<tr>";
-          for (let c = 0; c < 3; c++) {
-            html += `<td>${cells[c] || ""}</td>`;
-          }
+          header.forEach(h => html += `<th>${h || ""}</th>`);
           html += "</tr>";
+          // Body rows
+          for (let i = 1; i < data.length; i++) {
+            const r = data[i].slice(0, 3);
+            html += "<tr>";
+            for (let c = 0; c < 3; c++) {
+              html += `<td>${r[c] || ""}</td>`;
+            }
+            html += "</tr>";
+          }
+          html += "</table>";
+          return html;
         }
 
-        html += "</table>";
+        // --- Build two tables ---
+        let html = "";
+        html += buildTable(1, 11);  // rows 2–11
+        html += buildTable(12, rows.length);  // rows 13–end
+
         document.getElementById("sheet-data").innerHTML = html;
 
       } catch (err) {
