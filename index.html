@@ -16,6 +16,17 @@
       text-align: center;
       color: #333;
     }
+    #intro-text {
+      max-width: 700px;
+      margin: 1rem auto;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #444;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
     #sheet-data {
       max-width: 900px;
       margin: 2rem auto;
@@ -32,7 +43,7 @@
     }
     colgroup col:nth-child(1) { width: 200px; }
     colgroup col:nth-child(2) { width: 500px; }
-    colgroup col:nth-child(3) { width: 200px; }
+    colgroup col:nth-child(3) { width: 250px; }
 
     th, td {
       border: 1px solid #ddd;
@@ -55,12 +66,14 @@
   </style>
 </head>
 <body>
-  <h1>Council Positions</h1>
+  <h1>Google Sheet Data (Columns A–C)</h1>
+  <div id="intro-text"></div>
   <div id="sheet-data">Loading data...</div>
 
   <script>
     async function loadSheetData() {
       const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJ0Xd6VQTFd-8gxi6M0RgbSgZ1Z8SQsddSuucpMONFr5Ci9GUie8DN4nVlYCbnr8dAmj4H66Uq4f1m/pub?output=csv"; // replace with your Sheet CSV URL
+
       try {
         const response = await fetch(sheetURL);
         if (!response.ok) throw new Error("Network response was not ok");
