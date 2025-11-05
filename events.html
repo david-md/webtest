@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Events Calendar</title>
+  <style>
+    :root {
+      --card-width: 1100px;
+      --card-padding: 16px;
+      --radius: 14px;
+      --shadow: 0 10px 24px rgba(0,0,0,0.08);
+      --bg: #f7f8fa;
+      --fg: #222;
+      --card-bg: #fff;
+      --muted: #586069;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 24px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--fg); background: var(--bg);
+    }
+    header {
+      max-width: var(--card-width);
+      margin: 0 auto 16px auto;
+      text-align: center;
+    }
+    h1 { margin: 0 0 6px 0; font-size: 1.75rem; }
+    p.sub { margin: 0; color: var(--muted); }
+    .card {
+      max-width: var(--card-width);
+      margin: 16px auto;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: var(--card-padding);
+    }
+    .iframe-wrap {
+      position: relative;
+      width: 100%;
+      /* keep ratio for smaller screens; calendar resizes fine inside */
+      aspect-ratio: 16/11;
+      min-height: 600px; /* ensures usability on desktops */
+      border-radius: calc(var(--radius) - 4px);
+      overflow: hidden;
+    }
+    iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      border: 0;
+    }
+
+    /* small helper row for notes */
+    .note {
+      max-width: var(--card-width);
+      margin: 10px auto 0 auto;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    @media (max-width: 480px){
+      h1 { font-size: 1.35rem; }
+      .iframe-wrap { min-height: 520px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Events Calendar</h1>
+    <p class="sub">Live schedule embedded from Google Calendar</p>
+  </header>
+
+  <div class="card">
+    <div class="iframe-wrap">
+      <!--
+        HOW TO USE:
+
+        1) In Google Calendar (web):
+           • Settings (gear) → Settings → (left sidebar) “Settings for my calendars” → choose your calendar
+           • Access permissions: check “Make available to public” (required for unauthenticated embeds)
+           • Scroll to “Integrate calendar” → copy the “Public URL to this calendar” or use the “Embed code”
+           • You want the BASE embed URL of the form:
+             https://calendar.google.com/calendar/embed?src=<CALENDAR_ID>&ctz=<TIMEZONE>
+
+        2) Replace the 'src=' below with your calendar ID (often an email-like string).
+           Example public holidays calendar:
+           src=en.usa%23holiday%40group.v.calendar.google.com
+
+        3) Timezone (ctz) should be an IANA TZ like America/New_York
+
+        4) Optional controls:
+           showTitle=0/1, showPrint=0/1, showTabs=0/1, showCalendars=0/1, showTz=0/1, mode=AGENDA/WEEK/MONTH,
+           height ignored (we’re responsive), wkst=1..7, bgcolor=%23ffffff, color for overlays.
+      -->
+      <iframe
+        title="Event Calendar"
+        src="https://calendar.google.com/calendar/embed?src=1dade78fdc7d3935577df83e3ff56d4cc706b0ad4b505313b1ad736db00249ec%40group.calendar.google.com&ctz=America%2FNew_York"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+
+  <p class="note">
+    Tip: To overlay multiple calendars, append additional <code>&src=...</code> params to the iframe URL.
+  </p>
+
+  <!--
+    EXAMPLE with TWO calendars overlaid:
+    <iframe src="https://calendar.google.com/calendar/embed?src=YOUR_PRIMARY_ID&src=SECOND_CAL_ID&ctz=America%2FNew_York&mode=WEEK&showTabs=1"></iframe>
+  -->
+</body>
+</html>
